@@ -1,0 +1,29 @@
+{%- comment -%}
+  Shows up to 4 small photos for one entry on the project page.
+  Used by: _layouts/project.html
+{%- endcomment -%}
+{%- assign pt_folder = "/images/" | append: include.project | append: "/" | append: include.entry | append: "/" -%}
+{%- assign pt_files = site.static_files | sort: "path" -%}
+{%- assign pt_total = 0 -%}
+{%- capture pt_items -%}
+  {%- for f in pt_files -%}
+    {%- if f.path contains pt_folder -%}
+      {%- assign pt_ext = f.extname | downcase -%}
+      {%- if pt_ext == ".jpg" or pt_ext == ".jpeg" or pt_ext == ".png" or pt_ext == ".webp" or pt_ext == ".gif" -%}
+        {%- assign pt_total = pt_total | plus: 1 -%}
+        {%- if pt_total <= 4 %}
+      <li><img src="{{ f.path | relative_url }}" alt="" loading="lazy" decoding="async"></li>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if pt_total > 0 %}
+<a class="thumbs" href="{{ include.url | relative_url }}" tabindex="-1" aria-hidden="true">
+  <ul>{{ pt_items }}
+  </ul>
+  {%- if pt_total > 4 %}
+  <span class="thumbs__more">+{{ pt_total | minus: 4 }}</span>
+  {%- endif %}
+</a>
+{%- endif -%}

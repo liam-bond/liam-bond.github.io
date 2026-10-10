@@ -1,0 +1,39 @@
+{%- comment -%}
+  Picks the cover photo for a project:
+    1. images/<project>/cover.jpg (or .png, .webp) if you added one
+    2. otherwise the first photo of the newest entry that has photos
+    3. otherwise nothing
+  Used by: index.html and _layouts/project.html
+{%- endcomment -%}
+{%- assign pc_files = site.static_files | sort: "path" -%}
+{%- assign pc_cover = nil -%}
+{%- assign pc_prefix = "/images/" | append: include.project | append: "/cover." -%}
+{%- for f in pc_files -%}
+  {%- if f.path contains pc_prefix -%}
+    {%- assign pc_cover = f.path -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- unless pc_cover -%}
+  {%- assign pc_entries = site.log | sort: "date" | reverse -%}
+  {%- for e in pc_entries -%}
+    {%- assign pc_parts = e.relative_path | split: "/" -%}
+    {%- if pc_parts[1] == include.project -%}
+      {%- assign pc_slug = pc_parts | last | split: ".md" | first -%}
+      {%- assign pc_folder = "/images/" | append: include.project | append: "/" | append: pc_slug | append: "/" -%}
+      {%- for f in pc_files -%}
+        {%- if f.path contains pc_folder -%}
+          {%- assign pc_ext = f.extname | downcase -%}
+          {%- if pc_ext == ".jpg" or pc_ext == ".jpeg" or pc_ext == ".png" or pc_ext == ".webp" or pc_ext == ".gif" -%}
+            {%- assign pc_cover = f.path -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if pc_cover -%}{%- break -%}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endunless -%}
+{%- if pc_cover -%}
+<img src="{{ pc_cover | relative_url }}" alt="{{ include.alt | escape }}"{% if include.lazy %} loading="lazy"{% endif %} decoding="async">
+{%- endif -%}

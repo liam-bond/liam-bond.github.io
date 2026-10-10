@@ -1,0 +1,3 @@
+Put one folder of photos here per job.
+Name each folder the same as the job file in _log/samurai/ (without .md).
+Example: _log/samurai/ignition-timing.md  ->  images/samurai/ignition-timing/

@@ -1,0 +1,66 @@
+---
+layout: default
+---
+{%- comment -%}
+  One job: title, date, your notes, then every photo in
+  images/<project>/<entry>/. Links to the older and newer job
+  in the same project at the bottom.
+{%- endcomment -%}
+{%- assign ent_parts = page.relative_path | split: "/" -%}
+{%- assign ent_project = ent_parts[1] -%}
+{%- assign ent_slug = ent_parts | last | split: ".md" | first -%}
+
+{%- assign ent_proj = nil -%}
+{%- for p in site.projects -%}
+  {%- assign p_slug = p.relative_path | split: "/" | last | split: ".md" | first -%}
+  {%- if p_slug == ent_project -%}{%- assign ent_proj = p -%}{%- endif -%}
+{%- endfor -%}
+
+{%- assign ent_older = nil -%}
+{%- assign ent_newer = nil -%}
+{%- assign ent_found = false -%}
+{%- assign ent_all = site.log | sort: "date" -%}
+{%- for e in ent_all -%}
+  {%- assign ep = e.relative_path | split: "/" -%}
+  {%- if ep[1] == ent_project -%}
+    {%- if ent_found -%}
+      {%- assign ent_newer = e -%}
+      {%- break -%}
+    {%- endif -%}
+    {%- if e.url == page.url -%}
+      {%- assign ent_found = true -%}
+    {%- else -%}
+      {%- assign ent_older = e -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor %}
+
+<article class="entry">
+  <header class="wrap entry__head">
+    <p class="crumbs">
+      <a href="{{ '/' | relative_url }}#projects">Projects</a> /
+      {% if ent_proj %}<a href="{{ ent_proj.url | relative_url }}">{{ ent_proj.title }}</a>{% else %}{{ ent_project }}{% endif %}
+    </p>
+    <h1 class="entry__title">{{ page.title }}</h1>
+    <time class="entry__date" datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%-d %B %Y" }}</time>
+  </header>
+
+  <div class="wrap">
+    <div class="prose">{{ content }}</div>
+  </div>
+
+  <div class="wrap wrap--wide">
+    {% include photo-grid.html project=ent_project entry=ent_slug title=page.title %}
+  </div>
+
+  {%- if ent_older or ent_newer %}
+  <nav class="wrap entry-nav" aria-label="More from this project">
+    {%- if ent_older %}
+    <a class="entry-nav__older" href="{{ ent_older.url | relative_url }}"><span>Older</span>{{ ent_older.title }}</a>
+    {%- endif %}
+    {%- if ent_newer %}
+    <a class="entry-nav__newer" href="{{ ent_newer.url | relative_url }}"><span>Newer</span>{{ ent_newer.title }}</a>
+    {%- endif %}
+  </nav>
+  {%- endif %}
+</article>

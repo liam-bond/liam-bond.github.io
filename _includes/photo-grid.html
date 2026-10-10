@@ -1,0 +1,25 @@
+{%- comment -%}
+  Shows every photo in images/<project>/<entry>/ as a grid.
+  Clicking a photo opens it full size.
+  Used by: _layouts/entry.html
+{%- endcomment -%}
+{%- assign pg_folder = "/images/" | append: include.project | append: "/" | append: include.entry | append: "/" -%}
+{%- assign pg_files = site.static_files | sort: "path" -%}
+{%- assign pg_count = 0 -%}
+{%- capture pg_items -%}
+  {%- for f in pg_files -%}
+    {%- if f.path contains pg_folder -%}
+      {%- assign pg_ext = f.extname | downcase -%}
+      {%- if pg_ext == ".jpg" or pg_ext == ".jpeg" or pg_ext == ".png" or pg_ext == ".webp" or pg_ext == ".gif" -%}
+        {%- assign pg_count = pg_count | plus: 1 %}
+    <li><a class="photo" href="{{ f.path | relative_url }}" data-lightbox><img src="{{ f.path | relative_url }}" alt="Photo {{ pg_count }}, {{ include.title | escape }}" loading="lazy" decoding="async"></a></li>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if pg_count > 0 %}
+<section class="photos" aria-label="Photos">
+  <ul class="photo-grid" data-count="{{ pg_count }}">{{ pg_items }}
+  </ul>
+</section>
+{%- endif -%}
