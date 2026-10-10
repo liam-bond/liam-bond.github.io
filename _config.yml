@@ -1,0 +1,38 @@
+# Site settings. Change these two lines any time.
+title: Liam Bond
+tagline: Project notes and build logs.
+
+# Link shown in the footer. Leave blank to hide it.
+github_username: liam-bond
+
+# ---------------------------------------------------------------
+# You shouldn't need to change anything below this line.
+# ---------------------------------------------------------------
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# "log" holds the work entries, "projects" holds one file per project.
+collections:
+  log:
+    output: true
+    permalink: /projects/:path/
+  projects:
+    output: true
+    permalink: /projects/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: log
+    values:
+      layout: entry
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
+
+exclude:
+  - README.md

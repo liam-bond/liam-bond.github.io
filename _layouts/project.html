@@ -1,0 +1,78 @@
+---
+layout: default
+---
+{%- comment -%}
+  A project page: title, intro, cover photo, then every entry in
+  _log/<project>/ newest first, grouped by year.
+  The project name comes from the file name, so _projects/samurai.md
+  shows the entries in _log/samurai/.
+{%- endcomment -%}
+{%- assign project = page.relative_path | split: "/" | last | split: ".md" | first -%}
+{%- assign entries = site.log | sort: "date" | reverse -%}
+{%- assign entry_count = 0 -%}
+{%- for e in entries -%}
+  {%- assign ep = e.relative_path | split: "/" -%}
+  {%- if ep[1] == project -%}{%- assign entry_count = entry_count | plus: 1 -%}{%- endif -%}
+{%- endfor -%}
+{%- capture cover_html -%}{% include project-cover.html project=project alt=page.title %}{%- endcapture -%}
+{%- assign cover_html = cover_html | strip -%}
+
+<article class="project">
+  <header class="wrap project__head">
+    <p class="crumbs"><a href="{{ '/' | relative_url }}#projects">Projects</a></p>
+    <h1 class="project__title wide">{{ page.title }}</h1>
+    {%- if page.year %}
+    <p class="project__year">{{ page.year }}</p>
+    {%- endif %}
+    {%- assign intro = content | strip -%}
+    {%- if intro != "" %}
+    <div class="prose project__intro">{{ content }}</div>
+    {%- endif %}
+  </header>
+
+  {%- if cover_html != "" %}
+  <div class="wrap wrap--wide project-cover">{{ cover_html }}</div>
+  {%- endif %}
+
+  <section class="wrap log" aria-labelledby="log-heading">
+    <h2 id="log-heading" class="section-title">Work log
+      <span class="count">{{ entry_count }} {% if entry_count == 1 %}entry{% else %}entries{% endif %}</span>
+    </h2>
+
+    {%- if entry_count == 0 %}
+    <p class="empty">No work logged yet.</p>
+    {%- else -%}
+      {%- assign prev_year = "" -%}
+      {%- for e in entries -%}
+        {%- assign ep = e.relative_path | split: "/" -%}
+        {%- if ep[1] == project -%}
+          {%- assign e_slug = ep | last | split: ".md" | first -%}
+          {%- assign year = e.date | date: "%Y" -%}
+          {%- if year != prev_year -%}
+            {%- if prev_year != "" %}
+      </ol>
+    </div>
+            {%- endif %}
+    <div class="log-year">
+      <h3 class="log-year__label">{{ year }}</h3>
+      <ol class="log-list">
+            {%- assign prev_year = year -%}
+          {%- endif %}
+        <li class="log-row">
+          <time class="log-row__date" datetime="{{ e.date | date: '%Y-%m-%d' }}">{{ e.date | date: "%-d %b" }}</time>
+          <div>
+            <h4 class="log-row__title"><a href="{{ e.url | relative_url }}">{{ e.title }}</a></h4>
+            {%- assign summary = e.content | markdownify | split: "</p>" | first | strip_html | strip | truncatewords: 34 -%}
+            {%- if summary != "" %}
+            <p class="log-row__summary">{{ summary }}</p>
+            {%- endif %}
+            {% include photo-thumbs.html project=project entry=e_slug url=e.url %}
+          </div>
+        </li>
+        {%- endif -%}
+      {%- endfor %}
+      </ol>
+    </div>
+    {%- endif %}
+  </section>
+</article>
