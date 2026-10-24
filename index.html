@@ -30,16 +30,17 @@ layout: default
       {%- if p.link -%}{%- assign p_href = p.link -%}{%- else -%}{%- assign p_href = p.url | relative_url -%}{%- endif %}
 
     <li class="tile{% if p.wide %} tile--wide{% endif %}">
-      <div class="tile__media">
+      {%- comment -%} vt-… names pair each part with the project page (see _layouts/project.html) {%- endcomment -%}
+      <div class="tile__media"{% if p_cover != "" %} style="view-transition-name: vt-photo-{{ p_slug }}"{% endif %}>
         {%- if p_cover != "" -%}{{ p_cover }}{%- endif -%}
       </div>
       <div class="tile__body">
         {%- if p.year %}
-        <p class="tile__label">{{ p.year }}</p>
+        <p class="tile__label" style="view-transition-class: vt-text; view-transition-name: vt-year-{{ p_slug }}">{{ p.year }}</p>
         {%- endif %}
-        <h2 class="tile__title"><a class="tile__link" href="{{ p_href }}">{{ p.title }}</a></h2>
+        <h2 class="tile__title" style="view-transition-class: vt-text; view-transition-name: vt-title-{{ p_slug }}"><a class="tile__link" href="{{ p_href }}">{{ p.title }}</a></h2>
         {%- if p.summary %}
-        <p class="tile__summary">{{ p.summary }}</p>
+        <p class="tile__summary" style="view-transition-class: vt-text; view-transition-name: vt-summary-{{ p_slug }}">{{ p.summary }}</p>
         {%- endif %}
         {%- if p.papers %}
         <ul class="tile__papers">

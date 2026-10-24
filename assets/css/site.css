@@ -234,6 +234,7 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; }
 }
 
 .tile__label {
+  width: fit-content;
   margin: 0;
   font-size: 0.75rem;
   font-weight: 700;
@@ -242,7 +243,7 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; }
   color: var(--pencil);
 }
 
-.tile__title { font-size: 1.25rem; font-weight: 750; font-stretch: 112%; }
+.tile__title { font-size: 1.25rem; font-weight: 750; font-stretch: 112%; width: fit-content; }
 
 /* The title link covers the whole tile, so the tile is clickable */
 .tile__link { color: var(--ink); text-decoration: none; }
@@ -361,11 +362,26 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; }
 
 /* ---------- Project page ---------- */
 
-.project__head { padding-block: clamp(2.5rem, 7vw, 5rem) 2rem; }
+/* Title and text on the left, photo on the top right */
+.project__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+  padding-block: clamp(2.5rem, 7vw, 5rem) 3.5rem;
+}
+.project__head.has-cover { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+@media (max-width: 48rem) {
+  .project__head.has-cover { grid-template-columns: minmax(0, 1fr); }
+  .project__head.has-cover .project-cover { order: -1; }
+}
 
-.project__title { font-size: clamp(2.75rem, 9vw, 6.5rem); }
+.project__title { font-size: clamp(2.75rem, 7vw, 5.5rem); width: fit-content; max-width: 100%; }
+
+.project__summary { margin: 1rem 0 0; font-size: 1.125rem; color: var(--pencil); max-width: 46ch; }
 
 .project__year {
+  width: fit-content;
   margin: 0.75rem 0 0;
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
   font-weight: 500;
@@ -376,8 +392,7 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; }
 
 .project__intro { margin-top: 1.5rem; }
 
-.project-cover { margin-bottom: 3.5rem; }
-.project-cover img { aspect-ratio: 21 / 9; }
+.project-cover img { aspect-ratio: 4 / 3; border-radius: 12px; }
 
 .log { margin-top: 1rem; }
 
@@ -672,3 +687,24 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; }
 .notfound { padding-block: 5rem; }
 .notfound h1 { font-size: clamp(2.25rem, 6vw, 4rem); }
 .notfound p { margin: 1rem 0 0; }
+
+/* ---------- Tile-to-page animation ----------
+   Clicking a home page tile slides its photo, title, year and summary
+   into place on the project page (and back again with the Back button).
+   Works in Chrome, Edge and Safari; other browsers just change page. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  ::view-transition-group(*) {
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* Text scales evenly instead of stretching */
+  ::view-transition-old(*.vt-text),
+  ::view-transition-new(*.vt-text) {
+    height: 100%;
+    width: auto;
+  }
+}
