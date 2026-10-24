@@ -18,21 +18,30 @@ layout: default
 {%- assign cover_html = cover_html | strip -%}
 
 <article class="project">
-  <header class="wrap project__head">
-    <p class="crumbs"><a href="{{ '/' | relative_url }}#projects">Projects</a></p>
-    <h1 class="project__title wide">{{ page.title }}</h1>
-    {%- if page.year %}
-    <p class="project__year">{{ page.year }}</p>
-    {%- endif %}
-    {%- assign intro = content | strip -%}
-    {%- if intro != "" %}
-    <div class="prose project__intro">{{ content }}</div>
+  {%- comment -%}
+    The vt-… names match the same parts of this project's home page
+    tile, so clicking a tile animates its title, year, summary and
+    photo into place here.
+  {%- endcomment -%}
+  <header class="wrap wrap--wide project__head{% if cover_html != '' %} has-cover{% endif %}">
+    <div class="project__text">
+      <p class="crumbs"><a href="{{ '/' | relative_url }}#projects">Projects</a></p>
+      <h1 class="project__title wide" style="view-transition-class: vt-text; view-transition-name: vt-title-{{ project }}">{{ page.title }}</h1>
+      {%- if page.year %}
+      <p class="project__year" style="view-transition-class: vt-text; view-transition-name: vt-year-{{ project }}">{{ page.year }}</p>
+      {%- endif %}
+      {%- if page.summary %}
+      <p class="project__summary" style="view-transition-class: vt-text; view-transition-name: vt-summary-{{ project }}">{{ page.summary }}</p>
+      {%- endif %}
+      {%- assign intro = content | strip -%}
+      {%- if intro != "" %}
+      <div class="prose project__intro">{{ content }}</div>
+      {%- endif %}
+    </div>
+    {%- if cover_html != "" %}
+    <div class="project-cover" style="view-transition-name: vt-photo-{{ project }}">{{ cover_html }}</div>
     {%- endif %}
   </header>
-
-  {%- if cover_html != "" %}
-  <div class="wrap wrap--wide project-cover">{{ cover_html }}</div>
-  {%- endif %}
 
   <section class="wrap log" aria-labelledby="log-heading">
     <h2 id="log-heading" class="section-title">Work log
