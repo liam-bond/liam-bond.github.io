@@ -25,7 +25,7 @@ layout: default
   {%- endcomment -%}
   <header class="wrap wrap--wide project__head{% if cover_html != '' %} has-cover{% endif %}">
     <div class="project__text">
-      <p class="crumbs"><a href="{{ '/' | relative_url }}#projects">Projects</a></p>
+      <a class="back" href="{{ '/' | relative_url }}" aria-label="Back to all projects"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></a>
       <h1 class="project__title wide" style="view-transition-class: vt-text; view-transition-name: vt-title-{{ project }}">{{ page.title }}</h1>
       {%- if page.year %}
       <p class="project__year" style="view-transition-class: vt-text; view-transition-name: vt-year-{{ project }}">{{ page.year }}</p>
