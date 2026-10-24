@@ -2,65 +2,56 @@
 layout: default
 ---
 {%- comment -%}
-  Home page. Lists every project in _projects/.
-  Projects are ordered by the "order" number in each project file
-  (lowest first); projects without one go last.
+  Home page: a grid of tiles, 4 across on a wide screen.
+  The first tile is your name and bio (both set in _config.yml).
+  Every file in _projects/ becomes one more tile, ordered by its
+  "order" number (lowest first); files without one go last.
+  Optional settings in a project file:
+    wide: true        makes the tile two tiles wide
+    link: https://... sends the tile to that address instead of
+                      the project's own page
+    papers:           a list of titles and links shown on the tile
+  Photo: images/<project>/cover.jpg (see README).
 {%- endcomment -%}
-<section class="wrap hero">
-  <h1 class="hero__title wide">{{ site.title }}</h1>
-  {%- if site.tagline %}
-  <p class="hero__tagline">{{ site.tagline }}</p>
-  {%- endif %}
-</section>
+<section id="projects" class="wrap wrap--wide home" aria-label="Projects">
+  <ul class="tiles">
+    <li class="tile tile--intro">
+      <h1 class="tile__name wide">{{ site.title }}</h1>
+      {%- if site.bio %}
+      <p class="tile__bio">{{ site.bio }}</p>
+      {%- endif %}
+    </li>
 
-<section id="projects" class="wrap" aria-labelledby="projects-heading">
-  {%- assign projects = site.projects | sort: "order", "last" %}
-  <h2 id="projects-heading" class="section-title">Projects
-    <span class="count">{{ projects | size }}</span>
-  </h2>
-
-  {%- if projects.size == 0 %}
-  <p class="empty">No projects yet.</p>
-  {%- else %}
-  <ul class="project-index">
-    {%- assign log_newest_first = site.log | sort: "date" | reverse -%}
+    {%- assign projects = site.projects | sort: "order", "last" -%}
     {%- for p in projects -%}
       {%- assign p_slug = p.relative_path | split: "/" | last | split: ".md" | first -%}
-      {%- assign p_count = 0 -%}
-      {%- assign p_latest = nil -%}
-      {%- for e in log_newest_first -%}
-        {%- assign ep = e.relative_path | split: "/" -%}
-        {%- if ep[1] == p_slug -%}
-          {%- assign p_count = p_count | plus: 1 -%}
-          {%- unless p_latest -%}{%- assign p_latest = e.date -%}{%- endunless -%}
-        {%- endif -%}
-      {%- endfor -%}
       {%- capture p_cover -%}{% include project-cover.html project=p_slug alt="" lazy=true %}{%- endcapture -%}
-      {%- assign p_cover = p_cover | strip %}
-    <li class="project-row">
-      <a class="project-row__link{% if p_cover != '' %} has-media{% endif %}" href="{{ p.url | relative_url }}">
-        <div>
-          <h3 class="project-row__title wide">{{ p.title }}</h3>
-          {%- if p.year %}
-          <p class="project-row__year">{{ p.year }}</p>
-          {%- endif %}
-          {%- if p.summary %}
-          <p class="project-row__summary">{{ p.summary }}</p>
-          {%- endif %}
-          <p class="project-row__meta">
-            {%- if p_count > 0 -%}
-              {{ p_count }} {% if p_count == 1 %}entry{% else %}entries{% endif %}, last updated {{ p_latest | date: "%-d %B %Y" }}
-            {%- else -%}
-              No entries yet
-            {%- endif -%}
-          </p>
-        </div>
-        {%- if p_cover != "" %}
-        <div class="project-row__media">{{ p_cover }}</div>
+      {%- assign p_cover = p_cover | strip -%}
+      {%- if p.link -%}{%- assign p_href = p.link -%}{%- else -%}{%- assign p_href = p.url | relative_url -%}{%- endif %}
+
+    <li class="tile{% if p.wide %} tile--wide{% endif %}">
+      <div class="tile__media">
+        {%- if p_cover != "" -%}{{ p_cover }}{%- endif -%}
+      </div>
+      <div class="tile__body">
+        {%- if p.year %}
+        <p class="tile__label">{{ p.year }}</p>
         {%- endif %}
-      </a>
+        <h2 class="tile__title"><a class="tile__link" href="{{ p_href }}">{{ p.title }}</a></h2>
+        {%- if p.summary %}
+        <p class="tile__summary">{{ p.summary }}</p>
+        {%- endif %}
+        {%- if p.papers %}
+        <ul class="tile__papers">
+          {%- for paper in p.papers -%}
+            {%- if paper.title and paper.title != "" %}
+          <li>{% if paper.url and paper.url != "" %}<a href="{{ paper.url }}">{{ paper.title }}</a>{% else %}{{ paper.title }}{% endif %}</li>
+            {%- endif -%}
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+      </div>
     </li>
     {%- endfor %}
   </ul>
-  {%- endif %}
 </section>

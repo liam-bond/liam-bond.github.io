@@ -2,6 +2,9 @@
 title: Liam Bond
 tagline: Project notes and build logs.
 
+# Short bio shown in the first tile on the home page.
+bio: 
+
 # Link shown in the footer. Leave blank to hide it.
 github_username: liam-bond
 
