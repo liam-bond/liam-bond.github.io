@@ -180,6 +180,22 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; }
   font-variant-numeric: tabular-nums;
 }
 
+/* Round back-arrow button at the top left of project and entry pages */
+.back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--ink);
+  background: var(--tile);
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+.back:hover, .back:focus-visible { color: var(--blue); border-color: var(--blue); transform: translateX(-2px); }
+
 .crumbs {
   margin: 0 0 1.25rem;
   color: var(--pencil);
