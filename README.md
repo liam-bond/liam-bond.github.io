@@ -63,6 +63,16 @@ Photos show up on the job page in file-name order, and the first few appear on t
 
 `year`, `summary` and `order` are optional. `order` sets the order on the home page, lowest first.
 
+## Home page tiles
+
+The home page is a grid of tiles, 4 across. The first tile is your name and the `bio:` line in `_config.yml`. Every file in `_projects/` adds one tile, in `order` (lowest first). Extra lines a project file can have:
+
+- `wide: true` makes the tile two tiles wide.
+- `link: https://...` sends the tile to that address instead of the project's page.
+- `papers:` lists titles and links shown on the tile (see `_projects/research.md`).
+
+The tile photo is the project's cover photo (below).
+
 ## Cover photos
 
 A project uses the first photo of its newest job as its cover. To pick one yourself, upload a photo named `cover.jpg` to `images/<project>/`.
